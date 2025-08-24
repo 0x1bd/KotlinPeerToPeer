@@ -16,6 +16,8 @@ dependencies {
 
     implementation(libs.kotlinx.coroutines)
 
+    implementation(libs.bundles.logging)
+
     testImplementation(libs.kotlin.test)
 }
 

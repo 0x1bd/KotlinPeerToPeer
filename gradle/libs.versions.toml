@@ -3,6 +3,9 @@ kotlin = "2.2.0"
 junit = "5.10.2"
 serialization = "1.9.0"
 coroutines = "1.10.2"
+kotlin-logging = "7.0.3"
+slf4j-api = "2.0.17"
+logback = "1.5.18"
 
 [libraries]
 serialization-cbor = { module = "org.jetbrains.kotlinx:kotlinx-serialization-cbor", version.ref = "serialization" }
@@ -10,7 +13,14 @@ serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-jso
 
 kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 
+kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "kotlin-logging" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j-api" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+
+[bundles]
+logging = ["kotlin-logging", "slf4j-api", "logback-classic"]
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
