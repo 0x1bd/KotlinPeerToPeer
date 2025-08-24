@@ -1,5 +1,5 @@
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.serialization.Serializable
 import org.kvxd.kp2p.P2PNode
 import org.kvxd.kp2p.Packet
@@ -8,7 +8,6 @@ import org.kvxd.kp2p.protocolBuilder
 import org.kvxd.kp2p.register
 import kotlin.test.Test
 import kotlin.test.assertTrue
-import kotlin.time.Duration.Companion.seconds
 
 class EchoTest {
 
@@ -22,7 +21,7 @@ class EchoTest {
         val portA = 50510
         val portB = 50511
 
-        var echoPacket: Packet? = null
+        val packetReceived = CompletableDeferred<Packet>()
 
         val protocol = protocolBuilder { register<MessagePacket>() }
 
@@ -32,7 +31,7 @@ class EchoTest {
         val nodeB = P2PNode.create(listenPort = portB, protocol = protocol)
 
         nodeA.addListener { peer, packet -> peer.send(packet) }
-        nodeB.addListener { _, packet -> echoPacket = packet }
+        nodeB.addListener { _, packet -> packetReceived.complete(packet) }
 
         nodeA.start()
         nodeB.start()
@@ -42,7 +41,7 @@ class EchoTest {
 
         nodeB.connectedPeers().firstOrNull()?.send(MessagePacket("Hello, World!"))
 
-        delay(2.seconds)
+        val echoPacket = packetReceived.await()
 
         assertTrue { echoPacket is MessagePacket }
         assertTrue { (echoPacket as MessagePacket).text == "Hello, World!" }
